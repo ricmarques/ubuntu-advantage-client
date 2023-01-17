@@ -609,7 +609,7 @@ class TestGetPlatformInfo:
         assert expected_msg == str(excinfo.value)
 
     @pytest.mark.parametrize(
-        "os_release, arch, kernel, expected",
+        "os_release, arch, kernel, machine_type, expected",
         [
             (
                 {
@@ -618,6 +618,7 @@ class TestGetPlatformInfo:
                 },
                 "arm64",
                 "kernel-ver1",
+                "lxd",
                 {
                     "arch": "arm64",
                     "distribution": "Ubuntu",
@@ -626,6 +627,7 @@ class TestGetPlatformInfo:
                     "series": "xenial",
                     "type": "Linux",
                     "version": "16.04 LTS (Xenial Xerus)",
+                    "machine_type": "lxd",
                 },
             ),
             (
@@ -635,6 +637,7 @@ class TestGetPlatformInfo:
                 },
                 "amd64",
                 "kernel-ver2",
+                "none",
                 {
                     "arch": "amd64",
                     "distribution": "Ubuntu",
@@ -643,6 +646,7 @@ class TestGetPlatformInfo:
                     "series": "bionic",
                     "type": "Linux",
                     "version": "18.04 LTS (Bionic Beaver)",
+                    "machine_type": "none",
                 },
             ),
             (
@@ -652,6 +656,7 @@ class TestGetPlatformInfo:
                 },
                 "arm64",
                 "kernel-ver3",
+                "qemu",
                 {
                     "arch": "arm64",
                     "distribution": "Ubuntu",
@@ -660,6 +665,7 @@ class TestGetPlatformInfo:
                     "series": "jammy",
                     "type": "Linux",
                     "version": "22.04 LTS (Jammy Jellyfish)",
+                    "machine_type": "qemu",
                 },
             ),
             (
@@ -669,6 +675,7 @@ class TestGetPlatformInfo:
                 },
                 "amd64",
                 "kernel-ver4",
+                "wsl",
                 {
                     "arch": "amd64",
                     "distribution": "Ubuntu",
@@ -677,6 +684,7 @@ class TestGetPlatformInfo:
                     "series": "kinetic",
                     "type": "Linux",
                     "version": "22.10 LTS (Kinetic Kudu)",
+                    "machine_type": "wsl",
                 },
             ),
         ],
@@ -684,19 +692,23 @@ class TestGetPlatformInfo:
     @mock.patch("uaclient.system.get_kernel_info")
     @mock.patch("uaclient.system.get_dpkg_arch")
     @mock.patch("uaclient.system.parse_os_release")
+    @mock.patch("uaclient.system.get_machine_type")
     def test_get_platform_info_with_version(
         self,
+        m_get_machine_type,
         m_parse_os_release,
         m_get_dpkg_arch,
         m_get_kernel_info,
         os_release,
         arch,
         kernel,
+        machine_type,
         expected,
     ):
         m_parse_os_release.return_value = os_release
         m_get_dpkg_arch.return_value = arch
         m_get_kernel_info.return_value = mock.MagicMock(uname_release=kernel)
+        m_get_machine_type.return_value = machine_type
         assert expected == system.get_platform_info.__wrapped__()
 
 

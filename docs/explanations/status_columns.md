@@ -17,7 +17,8 @@ Where:
 
 * **SERVICE**: is the name of service being offered
 * **AVAILABLE**: if that service is available on that machine. To verify if a service is available, we
-  check the machine kernel version, architecture and Ubuntu release it is running.
+  check the machine kernel version, architecture, Ubuntu release being used and the machine type
+  (i.e lxd for LXD containers)
 * **DESCRIPTION**: A short description of the service.
 
 However, if we run the same command when attached, we have an output with 4 columns:

@@ -358,6 +358,7 @@ class UAContractClient(serviceclient.UAServiceClient):
             "architecture": platform["arch"],
             "series": platform["series"],
             "kernel": platform["kernel"],
+            "machine_type": platform["machine_type"],
         }
 
     def _get_activity_info(self, machine_id: Optional[str] = None):
