@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 from uaclient import event_logger, exceptions, messages, util, version
-from uaclient.config import UAConfig
+from uaclient.config import UA_CONFIGURABLE_KEYS, UAConfig
 from uaclient.contract import get_available_resources, get_contract_information
 from uaclient.defaults import ATTACH_FAIL_DATE_FORMAT, PRINT_WRAP_WIDTH
 from uaclient.entitlements import entitlement_factory, livepatch
@@ -340,7 +340,7 @@ def _get_config_status(cfg) -> Dict[str, Any]:
         status_desc = messages.ENABLE_REBOOT_REQUIRED_TMPL.format(
             operation=operation
         )
-    return {
+    ret = {
         "execution_status": status_val,
         "execution_details": status_desc,
         "notices": notices_list,
@@ -348,6 +348,14 @@ def _get_config_status(cfg) -> Dict[str, Any]:
         "config": cfg.cfg,
         "features": cfg.features,
     }
+    # LP: #2004280 maintain backwards compatibility
+    ua_config = {}
+    for key in UA_CONFIGURABLE_KEYS:
+        if hasattr(cfg, key):
+            ua_config[key] = getattr(cfg, key)
+    ret["config"]["ua_config"] = ua_config
+
+    return ret
 
 
 def status(cfg: UAConfig, show_all: bool = False) -> Dict[str, Any]:
