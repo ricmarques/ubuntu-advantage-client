@@ -469,3 +469,11 @@ class MissingSeriesOnOSReleaseFile(UserFacingError):
     def __init__(self, version):
         msg = messages.MISSING_SERIES_ON_OS_RELEASE.format(version=version)
         super().__init__(msg=msg.msg, msg_code=msg.name)
+
+
+class ErrorParsingAPTSourceFile(UserFacingError):
+    def __init__(self, exception_str: str):
+        msg = messages.ERROR_PARSING_APT_SOURCE_FILES.format(
+            exception_str=exception_str
+        )
+        super().__init__(msg=msg.msg, msg_code=msg.name)

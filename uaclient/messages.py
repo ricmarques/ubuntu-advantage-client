@@ -1160,3 +1160,10 @@ Could not extract series information from /etc/os-release.
 The VERSION filed does not have version information: {version}
 and the VERSION_CODENAME information is not present""",
 )
+
+ERROR_PARSING_APT_SOURCE_FILES = FormattedNamedMessage(
+    name="error-parsing-apt-source-files",
+    msg="""\
+Error parsing APT source files:
+{exception_str}""",
+)
